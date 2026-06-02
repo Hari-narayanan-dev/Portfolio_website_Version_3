@@ -6,19 +6,16 @@ import os
 from pathlib import Path
 from routes.chat_routes import chat_bp
 from routes.contact_routes import contact_bp
-env_path = Path(__file__).resolve().parents[1] / ".env"
-load_dotenv(env_path)
-print("------------------->",env_path.exists())
+from config import MONGO_URI, CONTACT_DATABASE_NAME
+
 
 app = Flask(__name__)
 
 CORS(app, supports_credentials=True)
 
-MONGO_URI = os.getenv("MONGO_URI")
-
 try:
     client = MongoClient(MONGO_URI)
-    db = client.get_database()
+    db = client.get_database(CONTACT_DATABASE_NAME)
     app.config["DB"] = db
     print("MongoDB Connected")
 except Exception as e:

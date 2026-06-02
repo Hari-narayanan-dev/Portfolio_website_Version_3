@@ -10,15 +10,58 @@ const channels = [
     { icon: Github, label: "GitHub", value: "github.com/harinarayananpari", href: "https://github.com/" },
 ];
 export function Contact() {
-    const [sent, setSent] = useState(false);
-    const onSubmit = (e) => {
-        e.preventDefault();
-        const data = new FormData(e.currentTarget);
-        const subject = encodeURIComponent(`Portfolio inquiry from ${data.get("name") ?? ""}`);
-        const body = encodeURIComponent(`${data.get("message") ?? ""}\n\n— ${data.get("name") ?? ""} (${data.get("email") ?? ""})`);
-        window.location.href = `mailto:harinarayananpari@gmail.com?subject=${subject}&body=${body}`;
-        setSent(true);
-    };
+    // const [sent, setSent] = useState(false);
+    // const onSubmit = (e) => {
+    //     e.preventDefault();
+    //     const data = new FormData(e.currentTarget);
+    //     const subject = encodeURIComponent(`Portfolio inquiry from ${data.get("name") ?? ""}`);
+    //     const body = encodeURIComponent(`${data.get("message") ?? ""}\n\n— ${data.get("name") ?? ""} (${data.get("email") ?? ""})`);
+    //     window.location.href = `mailto:harinarayananpari@gmail.com?subject=${subject}&body=${body}`;
+    //     setSent(true);
+    // };
+      const [sent, setSent] = useState(false);
+      const [loading, setLoading] = useState(false);
+
+      const onSubmit = async (e) => {
+          e.preventDefault();
+
+          setLoading(true);
+
+          const formData = new FormData(e.currentTarget);
+
+          const payload = {
+              name: formData.get("name"),
+              email: formData.get("email"),
+              message: formData.get("message")
+          };
+
+          try {
+              const response = await fetch(
+                  "http://localhost:5000/api/contact/",
+                  {
+                      method: "POST",
+                      headers: {
+                          "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify(payload)
+                  }
+              );
+
+              const result = await response.json();
+
+              if (result.success) {
+                  setSent(true);
+                  e.target.reset();
+              } else {
+                  console.error(result.error);
+                  e.target.reset();
+              }
+          } catch (error) {
+              console.error("Error:", error);
+          } finally {
+              setLoading(false);
+          }
+      };
     return (<Section id="contact" eyebrow="Get in touch" title={<>Let's build something <span className="text-gradient-primary">that matters</span></>} description="Roles, freelance, or just a sharp engineering conversation — my inbox is open.">
       <div className="grid gap-6 lg:grid-cols-5">
         <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="lg:col-span-2 space-y-3">
@@ -36,8 +79,8 @@ export function Contact() {
 
         <motion.form initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} onSubmit={onSubmit} className="lg:col-span-3 rounded-2xl glass gradient-border p-6 sm:p-8">
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field name="name" label="Name" placeholder="Jane Doe"/>
-            <Field name="email" type="email" label="Email" placeholder="jane@company.com"/>
+            <Field name="name" label="Name" placeholder="The Name You Prefer To Be Called"/>
+            <Field name="email" type="email" label="Email" placeholder="the mail you receive replies at"/>
           </div>
           <div className="mt-4">
             <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted-foreground">Message</label>

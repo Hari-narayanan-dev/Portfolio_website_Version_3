@@ -1,4 +1,6 @@
 from flask import Blueprint, request, jsonify, current_app
+from config import CONTACT_COLLECTION_NAME
+import traceback
 
 contact_bp = Blueprint("contact_bp", __name__)
 
@@ -14,9 +16,10 @@ def save_contact():
         }
 
         db = current_app.config.get("DB")
+        collection = db.get_collection(CONTACT_COLLECTION_NAME) if db is not None else None
 
         if db is not None:
-            db.contacts.insert_one(contact)
+            collection.insert_one(contact)
 
         return jsonify({
             "success": True,
@@ -24,6 +27,7 @@ def save_contact():
         }), 201
 
     except Exception as e:
+        traceback.print_exc()
         return jsonify({
             "success": False,
             "error": str(e)

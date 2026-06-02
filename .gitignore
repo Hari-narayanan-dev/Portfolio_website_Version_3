@@ -7,23 +7,36 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+
+# Build outputs
 dist
 dist-ssr
 .output
 .vinxi
 .tanstack/**
 .nitro
-*.local
 
-# Wrangler / Cloudflare
+# Local environment files
+.env
+*.env
+*.local
+backend/.env
+frontend/.env
+
+# Cloudflare
 .wrangler/
 .dev.vars
 
-# Editor directories and files
+# Python
+__pycache__/
+*.pyc
+
+# Editors
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
@@ -31,18 +44,5 @@ dist-ssr
 *.sln
 *.sw?
 
-# environment variables
-.env
-backend/.env
-*.env
-
-
-
-node_modules
-dist
-.output
-.vinxi
-pnpm-lock.yaml
-package-lock.json
-bun.lock
+# Generated files
 routeTree.gen.ts
