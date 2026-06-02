@@ -6,6 +6,7 @@ chat_bp = Blueprint("chat_bp", __name__)
 @chat_bp.route("/", methods=["POST"])
 def chat():
     try:
+        print("Received chat request")
         data = request.get_json()
         message = data.get("message", "").strip()
 
